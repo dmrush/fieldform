@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#16a34a",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#121920",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>FormBuilder Dashboard</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between py-6 px-4">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-primary size-10 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-2xl">dynamic_form</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-none">FormBuilder</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Enterprise Plan</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-semibold">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-sm font-medium">Forms</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">inbox</span>
+<span class="text-sm font-medium">Submissions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Team</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<button class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 px-4 text-white text-sm font-bold shadow-sm shadow-primary/20 hover:bg-primary/90 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>Create New Form</span>
+</button>
+<div class="flex items-center gap-3 px-2 pt-4 border-t border-slate-200 dark:border-slate-800">
+<div class="bg-slate-200 dark:bg-slate-700 aspect-square bg-cover rounded-full size-10" data-alt="User profile avatar portrait" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkZrZ-HVhzN_FgawUok2tvTS4UlS8mOPEATa3e5xCwZ2JvLMEsZ6xrMN4v1LwT6HVxDHdFUCP__5YnNQVjGudMGZyE1k6XFSr3uU1oQZ8429nP6kDO7aQdwVhtXW-ufSze0DbpC6VERy5XNU-hIFy7_w-STSnFwCmTrOe8Esu68N-fCwpGKKi8hpraCxJrBLb0d8vxxzVlknWEbB9oCluO0y4R39yvV2bcQmWpsVi-QvRtm8AwrWU5BKXaOuOjkuAz3pVWbdsxWKod");'></div>
+<div class="flex flex-col min-w-0">
+<p class="text-slate-900 dark:text-slate-100 text-sm font-semibold truncate">Alex Rivera</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs truncate">Admin Profile</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-y-auto">
+<!-- Header -->
+<header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-10">
+<div class="flex items-center gap-6">
+<h2 class="text-xl font-bold text-slate-900 dark:text-slate-100">Overview</h2>
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400" placeholder="Search forms or submissions..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+</header>
+<div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+<!-- Summary Stats Cards -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Total Submissions</span>
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="text-3xl font-bold text-slate-900 dark:text-slate-100">12,842</h3>
+<span class="text-emerald-500 text-sm font-semibold flex items-center">
+<span class="material-symbols-outlined text-sm">trending_up</span> 12%
+                            </span>
+</div>
+<p class="text-slate-400 text-xs mt-2">v.s. last 30 days</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Active Forms</span>
+<div class="bg-indigo-500/10 p-2 rounded-lg text-indigo-500">
+<span class="material-symbols-outlined">list_alt</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="text-3xl font-bold text-slate-900 dark:text-slate-100">48</h3>
+<span class="text-slate-400 text-sm font-semibold flex items-center">0%</span>
+</div>
+<p class="text-slate-400 text-xs mt-2">No change this week</p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-start mb-4">
+<span class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider">Recent (24h)</span>
+<div class="bg-amber-500/10 p-2 rounded-lg text-amber-500">
+<span class="material-symbols-outlined">history</span>
+</div>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="text-3xl font-bold text-slate-900 dark:text-slate-100">156</h3>
+<span class="text-rose-500 text-sm font-semibold flex items-center">
+<span class="material-symbols-outlined text-sm">trending_down</span> 5%
+                            </span>
+</div>
+<p class="text-slate-400 text-xs mt-2">Decreased since yesterday</p>
+</div>
+</section>
+<!-- Visualization Section -->
+<section class="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Submission Trends</h3>
+<p class="text-slate-500 text-sm">Daily volume across all forms</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 text-xs font-bold rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Week</button>
+<button class="px-3 py-1.5 text-xs font-bold rounded bg-primary text-white">Month</button>
+</div>
+</div>
+<div class="h-64 w-full">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 200"><!-- Grid lines -->
+<line class="text-slate-100 dark:text-slate-800" stroke="currentColor" stroke-width="1" x1="0" x2="800" y1="50" y2="50"></line>
+<line class="text-slate-100 dark:text-slate-800" stroke="currentColor" stroke-width="1" x1="0" x2="800" y1="100" y2="100"></line>
+<line class="text-slate-100 dark:text-slate-800" stroke="currentColor" stroke-width="1" x1="0" x2="800" y1="150" y2="150"></line>
+<!-- Bars (Histogram) -->
+<rect fill="#16a34a" height="50" rx="4" width="30" x="10" y="150"></rect>
+<rect fill="#16a34a" height="70" rx="4" width="30" x="60" y="130"></rect>
+<rect fill="#16a34a" height="100" rx="4" width="30" x="110" y="100"></rect>
+<rect fill="#16a34a" height="90" rx="4" width="30" x="160" y="110"></rect>
+<rect fill="#16a34a" height="120" rx="4" width="30" x="210" y="80"></rect>
+<rect fill="#16a34a" height="80" rx="4" width="30" x="260" y="120"></rect>
+<rect fill="#16a34a" height="60" rx="4" width="30" x="310" y="140"></rect>
+<rect fill="#16a34a" height="140" rx="4" width="30" x="360" y="60"></rect>
+<rect fill="#16a34a" height="110" rx="4" width="30" x="410" y="90"></rect>
+<rect fill="#16a34a" height="160" rx="4" width="30" x="460" y="40"></rect>
+<rect fill="#16a34a" height="130" rx="4" width="30" x="510" y="70"></rect>
+<rect fill="#16a34a" height="110" rx="4" width="30" x="560" y="90"></rect>
+<rect fill="#16a34a" height="90" rx="4" width="30" x="610" y="110"></rect>
+<rect fill="#16a34a" height="130" rx="4" width="30" x="660" y="70"></rect>
+<rect fill="#16a34a" height="140" rx="4" width="30" x="710" y="60"></rect>
+<rect fill="#16a34a" height="150" rx="4" width="30" x="760" y="50"></rect></svg>
+<div class="flex justify-between mt-4 text-xs font-medium text-slate-400 uppercase tracking-tighter">
+<span>01 May</span>
+<span>05 May</span>
+<span>10 May</span>
+<span>15 May</span>
+<span>20 May</span>
+<span>25 May</span>
+<span>30 May</span>
+</div>
+</div>
+</section>
+<!-- Recent Activity Table -->
+<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Recent Activity</h3>
+<button class="text-primary text-sm font-semibold hover:underline">View All Submissions</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Form Name</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Submission Date</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Submitted By</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">description</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Site Safety Inspection</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">May 24, 2024 • 14:32</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">JD</div>
+<span class="text-sm text-slate-600 dark:text-slate-400">John Doe</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">description</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Weekly Equipment Checklist</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">May 24, 2024 • 12:15</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px] font-bold text-emerald-600">SM</div>
+<span class="text-sm text-slate-600 dark:text-slate-400">Sarah Miller</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">description</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Customer Feedback Form</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">May 24, 2024 • 11:48</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-indigo-500/20 flex items-center justify-center text-[10px] font-bold text-indigo-600">MT</div>
+<span class="text-sm text-slate-600 dark:text-slate-400">Marcus T.</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">description</span>
+<span class="text-sm font-semibold text-slate-900 dark:text-slate-100">Vehicle Maintenance Log</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">May 24, 2024 • 09:30</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-amber-500/20 flex items-center justify-center text-[10px] font-bold text-amber-600">RW</div>
+<span class="text-sm text-slate-600 dark:text-slate-400">Robert White</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">open_in_new</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

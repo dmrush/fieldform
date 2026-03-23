@@ -1,0 +1,1011 @@
+================================================================================
+FORM MANAGEMENT SYSTEM - COMPLETE BUILD INSTRUCTIONS FOR TRAE.AI
+================================================================================
+
+VERSION: 1.0
+LAST UPDATED: March 18, 2026
+TARGET: Organization-based form management with role-based access
+TIMELINE: 14 days
+BUDGET: Under $200/month
+
+================================================================================
+TRAE.AI EXECUTION RULES (NON-NEGOTIABLE)
+================================================================================
+
+1. Execute tasks SEQUENTIALLY in exact order presented
+2. Complete one phase fully before starting the next
+3. Copy code from GitHub links EXACTLY - zero modifications
+4. DO NOT add features, libraries, or complexity not specified
+5. STOP and report errors immediately if any task fails
+6. Verify each task completion before proceeding
+7. Follow the tech stack EXACTLY - no substitutions
+
+================================================================================
+APPROVED TECH STACK (FIXED - NO CHANGES ALLOWED)
+================================================================================
+
+REQUIRED TECHNOLOGIES:
+✅ Next.js 14+ (App Router mode only)
+✅ Supabase (PostgreSQL + Auth)
+✅ Tailwind CSS
+✅ TypeScript
+
+ABSOLUTELY PROHIBITED (DO NOT USE):
+❌ Express.js (Next.js API routes replace this)
+❌ Redux/Zustand (React Context sufficient)
+❌ Custom JWT auth (Supabase Auth handles this)
+❌ GraphQL (use Supabase client with REST)
+❌ Any database except Supabase PostgreSQL
+❌ Any CSS framework except Tailwind
+❌ Separate backend server
+❌ Microservices architecture
+
+REASONING:
+- Simplicity: Single framework for frontend + backend
+- Stability: Production-proven, long-term support
+- Cost: Free tier sufficient for target budget
+- AI-friendly: Clear separation of concerns
+
+
+================================================================================
+PHASE 0: PRE-BUILD SETUP (HUMAN MUST COMPLETE)
+================================================================================
+
+TRAE.AI: DO NOT PROCEED UNTIL HUMAN CONFIRMS THIS PHASE IS COMPLETE
+
+HUMAN ACTIONS REQUIRED:
+
+STEP 0.1: Create Supabase Project
+----------------------------------
+1. Go to https://supabase.com
+2. Sign up / Login
+3. Create new project
+4. Choose a strong database password (save it)
+5. Wait for project to finish setting up (2-3 minutes)
+
+STEP 0.2: Collect Required Credentials
+---------------------------------------
+In Supabase Dashboard > Project Settings > API
+
+Copy these THREE values:
+1. Project URL (format: https://xxxxx.supabase.co)
+2. anon/public key (starts with eyJ...)
+3. service_role key (starts with eyJ...)
+
+STEP 0.3: Confirm Readiness
+----------------------------
+Human must confirm:
+[ ] Supabase project created
+[ ] All 3 credentials copied and ready
+[ ] Ready to proceed with build
+
+TRAE.AI CHECKPOINT: Human has confirmed readiness? YES / NO
+
+
+================================================================================
+PHASE 1: PROJECT INITIALIZATION
+================================================================================
+
+TASK 1.1: Create Next.js Project
+---------------------------------
+COMMAND:
+npx create-next-app@latest form-management-system
+
+WHEN PROMPTED, SELECT THESE OPTIONS EXACTLY:
+✅ Would you like to use TypeScript? → Yes
+✅ Would you like to use ESLint? → Yes
+✅ Would you like to use Tailwind CSS? → Yes
+✅ Would you like to use `src/` directory? → No
+✅ Would you like to use App Router? → Yes
+✅ Would you like to customize the default import alias? → No
+
+AFTER CREATION:
+cd form-management-system
+
+VERIFICATION:
+- package.json exists
+- app/ folder exists (not pages/)
+- tailwind.config.ts exists
+
+
+TASK 1.2: Install Dependencies
+-------------------------------
+RUN THESE COMMANDS SEQUENTIALLY (one at a time):
+
+npm install @supabase/supabase-js
+npm install @supabase/auth-helpers-nextjs
+
+VERIFICATION:
+Check package.json contains:
+- "@supabase/supabase-js"
+- "@supabase/auth-helpers-nextjs"
+- "next": "^14.0.0" or higher
+- "tailwindcss"
+
+
+TASK 1.3: Create Environment Variables
+---------------------------------------
+CREATE FILE: .env.local
+LOCATION: Project root (same level as package.json)
+
+CONTENT:
+NEXT_PUBLIC_SUPABASE_URL=YOUR_PROJECT_URL_FROM_STEP_0.2
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_ANON_KEY_FROM_STEP_0.2
+
+CRITICAL NOTES:
+- Replace YOUR_PROJECT_URL and YOUR_ANON_KEY with actual values
+- Do NOT commit this file to git (automatically ignored by Next.js)
+- Do NOT use quotes around values
+
+VERIFICATION:
+- .env.local exists in project root
+- Contains exactly 2 lines
+- Values match Supabase dashboard
+
+
+TASK 1.4: Setup Database Schema
+--------------------------------
+HUMAN ACTION REQUIRED: Run SQL in Supabase
+
+1. Go to Supabase Dashboard > SQL Editor
+2. Click "New Query"
+3. Copy SQL from this link:
+   
+   📎 https://gist.github.com/form-management-db-setup.sql
+   
+4. Paste entire content into SQL Editor
+5. Click "RUN"
+6. Wait for "Success. No rows returned" message
+
+WHAT THIS SQL DOES:
+- Creates 4 tables: organizations, users, forms, submissions
+- Sets up foreign key relationships
+- Creates performance indexes
+- Enables Row Level Security (RLS)
+- Applies security policies for role-based access
+- Creates helper functions for invite codes
+
+VERIFICATION:
+Go to Supabase Dashboard > Table Editor
+You should see exactly 4 tables:
+✅ organizations
+✅ users
+✅ forms
+✅ submissions
+
+If you see all 4 tables, TASK 1.4 is complete.
+
+PHASE 1 COMPLETE ✅
+
+
+================================================================================
+PHASE 2: CORE APPLICATION FILES
+================================================================================
+
+TASK 2.1: Create Supabase Client Utility
+-----------------------------------------
+CREATE FILE: lib/supabase.ts
+LOCATION: Create 'lib' folder in root, then create this file inside
+
+📎 CODE REFERENCE: https://gist.github.com/lib-supabase-ts
+
+WHAT THIS DOES:
+- Initializes Supabase client with environment variables
+- Exports single client instance for use across app
+
+VERIFICATION:
+- File exists at lib/supabase.ts
+- Imports createClient from @supabase/supabase-js
+- Exports const named 'supabase'
+
+
+TASK 2.2: Create Authentication Context
+----------------------------------------
+CREATE FILE: contexts/AuthContext.tsx
+LOCATION: Create 'contexts' folder in root, then create this file inside
+
+📎 CODE REFERENCE: https://gist.github.com/contexts-AuthContext-tsx
+
+WHAT THIS DOES:
+- Manages user authentication state globally
+- Fetches user profile from database
+- Provides useAuth() hook for accessing user/profile in components
+- Handles session persistence and auth state changes
+
+VERIFICATION:
+- File exists at contexts/AuthContext.tsx
+- Exports AuthProvider component
+- Exports useAuth hook
+- Uses 'use client' directive at top
+
+
+TASK 2.3: Create Protected Route Component
+-------------------------------------------
+CREATE FILE: components/ProtectedRoute.tsx
+LOCATION: Create 'components' folder in root, then create this file inside
+
+📎 CODE REFERENCE: https://gist.github.com/components-ProtectedRoute-tsx
+
+WHAT THIS DOES:
+- Wrapper component that checks if user is authenticated
+- Redirects to login if not authenticated
+- Redirects to correct dashboard based on role (admin/worker)
+- Shows loading state while checking authentication
+
+VERIFICATION:
+- File exists at components/ProtectedRoute.tsx
+- Accepts allowedRole prop
+- Uses useAuth() hook
+- Uses 'use client' directive
+
+
+TASK 2.4: Update Root Layout
+-----------------------------
+MODIFY FILE: app/layout.tsx (this file already exists)
+
+📎 CODE REFERENCE: https://gist.github.com/app-layout-tsx
+
+WHAT THIS DOES:
+- Wraps entire app with AuthProvider
+- Makes user authentication available to all pages
+- Preserves Next.js metadata and font configuration
+
+VERIFICATION:
+- File imports AuthProvider
+- All children wrapped in <AuthProvider>
+- Metadata includes correct title
+
+
+TASK 2.5: Create Homepage
+--------------------------
+MODIFY FILE: app/page.tsx (this file already exists)
+
+📎 CODE REFERENCE: https://gist.github.com/app-page-tsx
+
+WHAT THIS DOES:
+- Landing page with product description
+- Links to Register and Login pages
+- Simple, clean design using Tailwind
+
+VERIFICATION:
+- File contains links to /register and /login
+- Uses Tailwind gradient background
+- No 'use client' directive (this is a server component)
+
+PHASE 2 COMPLETE ✅
+
+
+================================================================================
+PHASE 3: AUTHENTICATION PAGES
+================================================================================
+
+TASK 3.1: Create Admin Registration Page
+-----------------------------------------
+CREATE FILE: app/register/page.tsx
+LOCATION: Create 'register' folder inside 'app', then create page.tsx
+
+📎 CODE REFERENCE: https://gist.github.com/app-register-page-tsx
+
+WHAT THIS DOES:
+- Admin signup form (email, password, name, org name)
+- Generates random 8-character invite code
+- Creates organization in database
+- Creates admin user profile
+- Redirects to admin dashboard on success
+
+VERIFICATION:
+- File exists at app/register/page.tsx
+- Uses 'use client' directive
+- Has form with 4 input fields
+- Generates invite code with Math.random()
+
+
+TASK 3.2: Create Login Page
+----------------------------
+CREATE FILE: app/login/page.tsx
+LOCATION: Create 'login' folder inside 'app', then create page.tsx
+
+📎 CODE REFERENCE: https://gist.github.com/app-login-page-tsx
+
+WHAT THIS DOES:
+- Login form (email, password)
+- Uses Supabase auth.signInWithPassword()
+- Fetches user role from database
+- Redirects to correct dashboard based on role
+
+VERIFICATION:
+- File exists at app/login/page.tsx
+- Uses 'use client' directive
+- Redirects admin to /admin/dashboard
+- Redirects worker to /worker/dashboard
+
+
+TASK 3.3: Create Worker Join Page
+----------------------------------
+CREATE FILE: app/join/page.tsx
+LOCATION: Create 'join' folder inside 'app', then create page.tsx
+
+📎 CODE REFERENCE: https://gist.github.com/app-join-page-tsx
+
+WHAT THIS DOES:
+- Validates invite code from URL parameter (?code=ABC123)
+- Shows organization name after validation
+- Worker signup form (name, password only - no email required)
+- Auto-generates unique email for worker
+- Creates worker user profile
+- Redirects to worker dashboard
+
+VERIFICATION:
+- File exists at app/join/page.tsx
+- Uses 'use client' directive
+- Reads code from searchParams
+- Validates code before showing form
+
+PHASE 3 COMPLETE ✅
+
+
+================================================================================
+PHASE 4: ADMIN SECTION
+================================================================================
+
+TASK 4.1: Create Admin Layout
+------------------------------
+CREATE FILE: app/admin/layout.tsx
+LOCATION: Create 'admin' folder inside 'app', then create layout.tsx
+
+
+WHAT THIS DOES:
+- Wraps all admin pages with ProtectedRoute (admin role required)
+- Top navigation with user name and logout
+- Sidebar with links to Dashboard, Forms, Submissions, Settings
+- Shared layout for all admin pages
+
+VERIFICATION:
+- File exists at app/admin/layout.tsx
+- Uses ProtectedRoute with allowedRole="admin"
+- Has logout button
+- Sidebar has 4 navigation links
+
+
+TASK 4.2: Create Admin Dashboard
+---------------------------------
+CREATE FILE: app/admin/dashboard/page.tsx
+LOCATION: Create 'dashboard' folder inside 'app/admin', then create page.tsx
+
+
+WHAT THIS DOES:
+- Shows 3 stat cards (total forms, submissions, workers)
+- Fetches counts from Supabase using count queries
+- Quick action links to create form, view forms, view submissions
+
+VERIFICATION:
+- File exists at app/admin/dashboard/page.tsx
+- Uses useAuth() hook
+- Fetches stats in useEffect
+- Shows 3 stat cards
+
+
+TASK 4.3: Create Forms List Page
+---------------------------------
+CREATE FILE: app/admin/forms/page.tsx
+LOCATION: Create 'forms' folder inside 'app/admin', then create page.tsx
+
+WHAT THIS DOES:
+- Lists all forms for current organization
+- Table with columns: Title, Description, Created, Actions
+- "Create Form" button
+- Delete functionality with confirmation
+- Links to view individual form
+
+VERIFICATION:
+- File exists at app/admin/forms/page.tsx
+- Fetches forms filtered by organization_id
+- Has delete button with confirm dialog
+- Shows "Create Form" button
+
+
+TASK 4.4: Create Form Builder Page
+-----------------------------------
+CREATE FILE: app/admin/forms/new/page.tsx
+LOCATION: Create 'new' folder inside 'app/admin/forms', then create page.tsx
+
+
+WHAT THIS DOES:
+- Form builder interface with:
+  - Form title and description inputs
+  - Add field button
+  - Field configuration (label, type, required, options)
+  - Reorder fields (up/down buttons)
+  - Remove field button
+- Supported field types: text, textarea, number, select, date
+- Saves form with fields as JSONB to database
+
+CRITICAL LOGIC:
+- Fields stored as array: [{id, type, label, required, options?}]
+- Select fields require options array (one per line in textarea)
+- Validation: at least 1 field, all fields have labels, selects have options
+
+VERIFICATION:
+- File exists at app/admin/forms/new/page.tsx
+- Can add/remove fields dynamically
+- Supports 5 field types
+- Validates before save
+
+
+TASK 4.5: Create Form Detail Page
+----------------------------------
+CREATE FILE: app/admin/forms/[id]/page.tsx
+LOCATION: Create '[id]' folder inside 'app/admin/forms', then create page.tsx
+
+
+WHAT THIS DOES:
+- Shows form structure (all fields with labels and types)
+- Lists all submissions for this form
+- Each submission shows:
+  - Worker name who submitted
+  - Submission timestamp
+  - All answers mapped to field labels
+
+VERIFICATION:
+- File exists at app/admin/forms/[id]/page.tsx
+- Uses useParams to get form id
+- Fetches form and submissions with join
+- Displays answers for each field
+
+
+TASK 4.6: Create Submissions Page
+----------------------------------
+CREATE FILE: app/admin/submissions/page.tsx
+LOCATION: Create 'submissions' folder inside 'app/admin', then create page.tsx
+
+📎 CODE REFERENCE: https://gist.github.com/app-admin-submissions-page-tsx
+
+WHAT THIS DOES:
+- Lists ALL submissions across all forms
+- Table with columns: Form, Submitted By, Submitted At
+- Filtered by current organization
+
+VERIFICATION:
+- File exists at app/admin/submissions/page.tsx
+- Fetches submissions with joins to forms and users
+- Shows all org submissions
+
+
+TASK 4.7: Create Settings Page
+-------------------------------
+CREATE FILE: app/admin/settings/page.tsx
+LOCATION: Create 'settings' folder inside 'app/admin', then create page.tsx
+
+📎 CODE REFERENCE: https://gist.github.com/app-admin-settings-page-tsx
+
+WHAT THIS DOES:
+- Displays organization name
+- Shows current invite code
+- Shows full invite link (domain + /join?code=XXX)
+- Copy to clipboard button
+- Regenerate code button (with confirmation)
+
+VERIFICATION:
+- File exists at app/admin/settings/page.tsx
+- Fetches organization data
+- Shows invite code and link
+- Copy button uses navigator.clipboard
+
+PHASE 4 COMPLETE ✅
+
+
+================================================================================
+PHASE 5: WORKER SECTION
+================================================================================
+
+TASK 5.1: Create Worker Layout
+-------------------------------
+CREATE FILE: app/worker/layout.tsx
+LOCATION: Create 'worker' folder inside 'app', then create layout.tsx
+
+
+WHAT THIS DOES:
+- Wraps all worker pages with ProtectedRoute (worker role required)
+- Top navigation with Dashboard and My Submissions links
+- User name and logout button
+- Shared layout for all worker pages
+
+VERIFICATION:
+- File exists at app/worker/layout.tsx
+- Uses ProtectedRoute with allowedRole="worker"
+- Top nav has 2 links
+- Has logout button
+
+
+TASK 5.2: Create Worker Dashboard
+----------------------------------
+CREATE FILE: app/worker/dashboard/page.tsx
+LOCATION: Create 'dashboard' folder inside 'app/worker', then create page.tsx
+
+
+WHAT THIS DOES:
+- Shows all available forms for organization
+- Grid of cards (each card = one form)
+- Each card shows title, description, and "Fill Form" link
+- Links to /worker/forms/[id] for each form
+
+VERIFICATION:
+- File exists at app/worker/dashboard/page.tsx
+- Fetches forms filtered by organization_id
+- Shows forms in grid layout
+- Each card links to form fill page
+
+
+TASK 5.3: Create Form Fill Page
+--------------------------------
+CREATE FILE: app/worker/forms/[id]/page.tsx
+LOCATION: Create 'forms' folder inside 'app/worker', then create '[id]' folder, then create page.tsx
+
+
+WHAT THIS DOES:
+- Fetches form by id
+- Dynamically renders form fields based on form.fields array
+- Maps field types to appropriate inputs:
+  - text → <input type="text">
+  - textarea → <textarea>
+  - number → <input type="number">
+  - select → <select> with options
+  - date → <input type="date">
+- Validates required fields before submit
+- Saves answers as {field_id: value} object to database
+- Redirects to worker dashboard on success
+
+CRITICAL LOGIC:
+- Initialize answers object on mount: {field_1: '', field_2: '', ...}
+- Update answers on input change
+- Validate required fields have non-empty values
+- Submit answers as JSONB to submissions table
+
+VERIFICATION:
+- File exists at app/worker/forms/[id]/page.tsx
+- Renders all 5 field types correctly
+- Validates required fields
+- Saves to submissions table
+
+
+TASK 5.4: Create Submission History Page
+-----------------------------------------
+CREATE FILE: app/worker/history/page.tsx
+LOCATION: Create 'history' folder inside 'app/worker', then create page.tsx
+
+WHAT THIS DOES:
+- Lists all submissions by current worker
+- Shows form title and submission date
+- Displays all answers for each submission
+- Filtered by submitted_by = current user id
+
+VERIFICATION:
+- File exists at app/worker/history/page.tsx
+- Fetches submissions with join to forms
+- Shows worker's submissions only
+- Displays answers mapped to field labels
+
+PHASE 5 COMPLETE ✅
+
+
+================================================================================
+PHASE 6: TESTING & VERIFICATION
+================================================================================
+
+TASK 6.1: Start Development Server
+-----------------------------------
+COMMAND:
+npm run dev
+
+EXPECTED OUTPUT:
+- ✓ Ready in X ms
+- ○ Local: http://localhost:3000
+
+VERIFICATION:
+Open browser to http://localhost:3000
+You should see the homepage with:
+- "Form Management System" title
+- "Register as Admin" button
+- "Login" button
+
+
+TASK 6.2: Test Admin Registration Flow
+---------------------------------------
+1. Click "Register as Admin"
+2. Fill in form:
+   - Email: admin@test.com
+   - Password: password123
+   - Name: Test Admin
+   - Organization: Test Org
+3. Click "Register"
+
+EXPECTED RESULT:
+✅ Redirect to /admin/dashboard
+✅ See "Test Admin (Admin)" in top right
+✅ See 3 stat cards showing 0s
+✅ Sidebar has 4 links
+
+IF FAILED:
+- Check Supabase credentials in .env.local
+- Check Supabase Table Editor shows new org and user
+
+
+TASK 6.3: Test Form Creation
+-----------------------------
+1. In admin dashboard, click "Forms" in sidebar
+2. Click "+ Create Form"
+3. Fill in:
+   - Form Title: Employee Survey
+   - Description: Annual employee feedback
+4. Click "Add Field" 3 times and configure:
+   - Field 1: Label "Your Name", Type "Text", Required ✅
+   - Field 2: Label "Department", Type "Select", Options "Sales\nEngineering\nHR"
+   - Field 3: Label "Feedback", Type "Textarea", Required ✅
+5. Click "Create Form"
+
+EXPECTED RESULT:
+✅ Redirect to /admin/forms
+✅ See "Employee Survey" in forms list
+
+IF FAILED:
+- Check console for errors
+- Verify forms table has RLS policies applied
+
+
+TASK 6.4: Test Invite System
+-----------------------------
+1. In admin dashboard, click "Settings"
+2. Note the 8-character invite code
+3. Click "Copy Invite Link"
+
+EXPECTED RESULT:
+✅ See invite code (e.g., ABC123XY)
+✅ See full invite link
+✅ "Copied!" appears after clicking copy
+
+VERIFICATION:
+Paste link in notepad - should look like:
+http://localhost:3000/join?code=ABC123XY
+
+
+TASK 6.5: Test Worker Join Flow
+--------------------------------
+1. Open NEW INCOGNITO/PRIVATE browser window
+2. Paste the invite link from Task 6.4
+3. Verify organization name shows "Test Org"
+4. Fill in:
+   - Your Name: Test Worker
+   - Password: password123
+5. Click "Join"
+
+EXPECTED RESULT:
+✅ Redirect to /worker/dashboard
+✅ See "Test Worker (Worker)" in top right
+✅ See "Employee Survey" card
+
+IF FAILED:
+- Verify invite code matches in organizations table
+- Check public.users RLS policy allows insert
+
+
+TASK 6.6: Test Form Submission
+-------------------------------
+(Continue in worker incognito window)
+
+1. Click on "Employee Survey" card
+2. Fill in all fields:
+   - Your Name: John Doe
+   - Department: Engineering (select from dropdown)
+   - Feedback: Great company culture!
+3. Click "Submit Form"
+
+EXPECTED RESULT:
+✅ Success message or redirect to /worker/dashboard
+✅ Can see submission in "My Submissions" page
+
+IF FAILED:
+- Check submissions table RLS policy allows insert
+- Verify form_id and organization_id are correct
+
+
+TASK 6.7: Test Admin Viewing Submission
+----------------------------------------
+(Switch back to admin browser window)
+
+1. Go to /admin/forms
+2. Click "View" on "Employee Survey"
+3. Scroll to "Submissions" section
+
+EXPECTED RESULT:
+✅ See 1 submission
+✅ Submitted by: Test Worker
+✅ Answers show:
+   - Your Name: John Doe
+   - Department: Engineering
+   - Feedback: Great company culture!
+
+IF FAILED:
+- Check submissions query includes join to users table
+- Verify RLS allows admin to view org submissions
+
+
+TASK 6.8: Test Logout and Re-login
+-----------------------------------
+1. Click "Logout" (in either window)
+2. Verify redirect to /login
+3. Login with:
+   - Email: admin@test.com
+   - Password: password123
+4. Verify redirect to /admin/dashboard
+
+EXPECTED RESULT:
+✅ Logout works
+✅ Login works
+✅ Redirects to correct dashboard
+
+ALL TESTS PASSED? ✅ PROCEED TO DEPLOYMENT
+
+
+================================================================================
+PHASE 7: DEPLOYMENT
+================================================================================
+
+TASK 7.1: Prepare Git Repository
+---------------------------------
+1. Initialize git (if not already):
+   git init
+
+2. Add all files:
+   git add .
+
+3. Commit:
+   git commit -m "Initial commit - Form Management System"
+
+4. Create GitHub repository:
+   - Go to github.com
+   - Click "New repository"
+   - Name: form-management-system
+   - DO NOT initialize with README
+   - Copy the repository URL
+
+5. Push to GitHub:
+   git branch -M main
+   git remote add origin YOUR_GITHUB_REPO_URL
+   git push -u origin main
+
+VERIFICATION:
+✅ Code appears on GitHub
+✅ All files visible in repository
+
+
+TASK 7.2: Deploy to Vercel
+---------------------------
+1. Go to https://vercel.com
+2. Sign up / Login (can use GitHub)
+3. Click "New Project"
+4. Import your form-management-system repository
+5. Configure:
+   - Framework Preset: Next.js (auto-detected)
+   - Root Directory: ./
+   - Build Command: npm run build (auto-filled)
+   - Install Command: npm install (auto-filled)
+
+6. Add Environment Variables (click "Environment Variables"):
+   Key: NEXT_PUBLIC_SUPABASE_URL
+   Value: YOUR_SUPABASE_URL
+
+   Key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+   Value: YOUR_ANON_KEY
+
+7. Click "Deploy"
+
+WAIT TIME: 2-5 minutes for first deployment
+
+VERIFICATION:
+✅ Build succeeds
+✅ Deployment URL provided (e.g., form-management-system.vercel.app)
+
+
+TASK 7.3: Test Production Deployment
+-------------------------------------
+1. Open Vercel deployment URL
+2. Repeat tests from Phase 6:
+   - Admin registration
+   - Form creation
+   - Worker join
+   - Form submission
+   - Viewing submissions
+
+EXPECTED RESULT:
+✅ All features work in production
+✅ No console errors
+✅ Invite links use production domain
+
+IF FAILED:
+- Check Vercel deployment logs
+- Verify environment variables set correctly
+- Ensure Supabase project allows connections from Vercel domain
+
+PHASE 7 COMPLETE ✅
+
+
+================================================================================
+FINAL VERIFICATION CHECKLIST
+================================================================================
+
+STRUCTURE VERIFICATION:
+[ ] 20 files created in correct locations
+[ ] All imports resolve without errors
+[ ] No TypeScript errors
+[ ] npm run dev starts without errors
+
+FUNCTIONALITY VERIFICATION:
+[ ] Admin can register
+[ ] Admin can create forms
+[ ] Admin can see invite code
+[ ] Worker can join via invite link
+[ ] Worker can submit forms
+[ ] Admin can view submissions
+[ ] Logout/login works for both roles
+
+DATABASE VERIFICATION:
+[ ] 4 tables exist in Supabase
+[ ] RLS enabled on all tables
+[ ] Security policies prevent unauthorized access
+[ ] Organizations table has invite codes
+
+DEPLOYMENT VERIFICATION:
+[ ] Code pushed to GitHub
+[ ] Deployed to Vercel
+[ ] Production site works
+[ ] Environment variables configured
+
+ALL CHECKED? ✅ BUILD COMPLETE! 🎉
+
+
+================================================================================
+TROUBLESHOOTING GUIDE
+================================================================================
+
+ERROR: "Failed to fetch" in browser console
+CAUSE: Supabase credentials incorrect or missing
+FIX: 
+1. Check .env.local has correct NEXT_PUBLIC_SUPABASE_URL and KEY
+2. Restart dev server (npm run dev)
+3. Verify values match Supabase dashboard exactly
+
+ERROR: "Invalid invite code" when joining
+CAUSE: Code doesn't exist in organizations table
+FIX:
+1. Go to Supabase Table Editor > organizations
+2. Verify invite_code column has a value
+3. Use that exact code in URL
+
+ERROR: "RLS policy violated" or "new row violates row-level security"
+CAUSE: RLS policies not applied correctly
+FIX:
+1. Go to Supabase SQL Editor
+2. Re-run entire database setup SQL
+3. Verify policies exist in Supabase Dashboard > Authentication > Policies
+
+ERROR: TypeScript errors about types
+CAUSE: Missing type definitions
+FIX:
+npm install --save-dev @types/node @types/react @types/react-dom
+
+ERROR: Build fails during deployment
+CAUSE: Dependencies or environment issues
+FIX:
+1. Delete node_modules and .next folders
+2. Run npm install
+3. Run npm run build locally to test
+4. Check Vercel build logs for specific error
+
+ERROR: Can't see forms as worker
+CAUSE: Organization ID mismatch or RLS policy issue
+FIX:
+1. Check worker's organization_id matches form's organization_id
+2. Verify "View org forms" RLS policy exists on forms table
+3. Check Supabase logs for blocked queries
+
+ERROR: Submissions not appearing
+CAUSE: RLS policy blocking view or organization_id mismatch
+FIX:
+1. Verify submission.organization_id matches user.organization_id
+2. Check "View org submissions" RLS policy exists
+3. Test query directly in Supabase SQL Editor
+
+
+================================================================================
+COST BREAKDOWN
+================================================================================
+
+SUPABASE (Free Tier):
+- Database: FREE up to 500MB
+- Authentication: FREE unlimited users
+- API requests: FREE up to 2M/month
+- Storage: FREE up to 1GB
+
+VERCEL (Hobby Tier):
+- Hosting: FREE
+- Bandwidth: FREE up to 100GB/month
+- Builds: FREE unlimited
+
+TOTAL MONTHLY COST: $0
+
+UPGRADE TRIGGERS:
+- Database >500MB → Supabase Pro ($25/month)
+- Bandwidth >100GB → Vercel Pro ($20/month)
+- Need custom domain → Domain registrar ($10-15/year)
+
+TARGET BUDGET MET: ✅ Under $200/month
+
+
+================================================================================
+GITHUB CODE REFERENCE LINKS
+================================================================================
+
+DATABASE SETUP:
+📎 https://gist.github.com/form-management-db-setup.sql
+
+CORE FILES:
+📎 https://gist.github.com/lib-supabase-ts
+📎 https://gist.github.com/contexts-AuthContext-tsx
+📎 https://gist.github.com/components-ProtectedRoute-tsx
+📎 https://gist.github.com/app-layout-tsx
+📎 https://gist.github.com/app-page-tsx
+
+AUTH PAGES:
+📎 https://gist.github.com/app-register-page-tsx
+📎 https://gist.github.com/app-login-page-tsx
+📎 https://gist.github.com/app-join-page-tsx
+
+ADMIN PAGES:
+📎 https://gist.github.com/app-admin-layout-tsx
+📎 https://gist.github.com/app-admin-dashboard-page-tsx
+📎 https://gist.github.com/app-admin-forms-page-tsx
+📎 https://gist.github.com/app-admin-forms-new-page-tsx
+📎 https://gist.github.com/app-admin-forms-id-page-tsx
+📎 https://gist.github.com/app-admin-submissions-page-tsx
+📎 https://gist.github.com/app-admin-settings-page-tsx
+
+WORKER PAGES:
+📎 https://gist.github.com/app-worker-layout-tsx
+📎 https://gist.github.com/app-worker-dashboard-page-tsx
+📎 https://gist.github.com/app-worker-forms-id-page-tsx
+📎 https://gist.github.com/app-worker-history-page-tsx
+
+NOTE: Replace "gist.github.com" with actual GitHub Gist URLs
+after creating gists with the code from the original PRD.
+
+
+================================================================================
+DOCUMENT COMPLETION
+================================================================================
+
+This document contains COMPLETE instructions for building the Form Management
+System using Trae.ai. No code is embedded - all code is referenced via GitHub
+links for clean, maintainable instructions.
+
+EXECUTION STRATEGY:
+1. Human completes Phase 0
+2. Trae.ai executes Phases 1-5 sequentially
+3. Human runs Phase 6 tests
+4. Human executes Phase 7 deployment
+
+EXPECTED OUTCOME:
+- Fully functional form management system
+- Role-based access (admin/worker)
+- Invite-based worker onboarding
+- Dynamic form builder
+- Secure data with RLS
+- Deployed to production
+- Total cost: $0/month
+
+VERSION: 1.0
+STATUS: Ready for execution
+LAST UPDATED: March 18, 2026
+
+================================================================================
+END OF DOCUMENT
+================================================================================
