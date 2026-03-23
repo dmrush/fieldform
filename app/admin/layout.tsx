@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { Menu, Bell, HelpCircle, ClipboardList } from "lucide-react";
  
  export default function AdminLayout({ children }: { children: React.ReactNode }) {
  const { profile, user, signOut } = useAuth();
@@ -22,7 +23,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
             <div className="flex flex-col gap-8">
               <div className="flex items-center gap-3 px-2">
                 <div className="bg-[#16a34a] size-10 rounded-lg flex items-center justify-center text-white">
-                  <span className="material-symbols-outlined text-2xl">dynamic_form</span>
+                  <ClipboardList className="size-6" />
                 </div>
                 <div className="flex flex-col">
                   <h1 className="text-slate-900 text-lg font-bold leading-none">FormBuilder</h1>
@@ -103,7 +104,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
             <header className="h-16 border-b border-slate-200 bg-white/80 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 md:px-8 sticky top-0 z-10">
               <div className="flex items-center gap-3 sm:gap-6">
                 <button aria-label="Open menu" onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 md:hidden" style={{ touchAction: "manipulation" }}>
-                  <span className="material-symbols-outlined">menu</span>
+                  <Menu className="size-5" />
                 </button>
                 <h2 className="text-xl font-bold text-slate-900">Overview</h2>
                 <div className="relative w-40 sm:w-56 md:w-64 hidden md:block">
@@ -115,10 +116,10 @@ import ProtectedRoute from "@/components/ProtectedRoute";
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
                 <button aria-label="Notifications" className="size-10 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-lg" style={{ touchAction: "manipulation" }}>
-                  <span className="material-symbols-outlined">notifications</span>
+                  <Bell className="size-5" />
                 </button>
                 <button aria-label="Help" className="size-10 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-lg" style={{ touchAction: "manipulation" }}>
-                  <span className="material-symbols-outlined">help_outline</span>
+                  <HelpCircle className="size-5" />
                 </button>
                 <button onClick={signOut} className="ml-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 md:hidden" style={{ touchAction: "manipulation" }}>Logout</button>
               </div>

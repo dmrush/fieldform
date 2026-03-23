@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, startTransition, useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { BarChart3, ListChecks, History, FileText, ExternalLink } from "lucide-react";
  
  export default function AdminDashboardPage() {
    const { profile } = useAuth();
@@ -142,7 +143,7 @@ import { supabase } from "@/lib/supabase";
           <div className="flex justify-between items-start mb-2">
             <span className="text-slate-500 text-sm font-medium uppercase tracking-wider">Total Submissions</span>
             <div className="bg-[#16a34a]/10 p-2 rounded-lg text-[#16a34a]">
-              <span className="material-symbols-outlined">analytics</span>
+              <BarChart3 className="size-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
@@ -155,7 +156,7 @@ import { supabase } from "@/lib/supabase";
           <div className="flex justify-between items-start mb-2">
             <span className="text-slate-500 text-sm font-medium uppercase tracking-wider">Active Forms</span>
             <div className="bg-indigo-500/10 p-2 rounded-lg text-indigo-500">
-              <span className="material-symbols-outlined">list_alt</span>
+              <ListChecks className="size-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
@@ -168,7 +169,7 @@ import { supabase } from "@/lib/supabase";
           <div className="flex justify-between items-start mb-2">
             <span className="text-slate-500 text-sm font-medium uppercase tracking-wider">Recent (24h)</span>
             <div className="bg-amber-500/10 p-2 rounded-lg text-amber-500">
-              <span className="material-symbols-outlined">history</span>
+              <History className="size-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
@@ -302,7 +303,7 @@ function RecentActivity({ orgId }: { orgId: string }) {
               <tr key={r.id} className="hover:bg-slate-50">
                 <td className="px-4 sm:px-6 py-3 sm:py-4">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-slate-400">description</span>
+                    <FileText className="size-4 text-slate-400" />
                     <span className="text-xs sm:text-sm font-semibold text-slate-900">{r.formName}</span>
                   </div>
                 </td>
@@ -317,7 +318,7 @@ function RecentActivity({ orgId }: { orgId: string }) {
                 </td>
                 <td className="px-4 sm:px-6 py-3 sm:py-4 text-right">
                   <Link href="/admin/submissions" className="text-slate-400 hover:text-[#16a34a]">
-                    <span className="material-symbols-outlined text-xl">open_in_new</span>
+                    <ExternalLink className="size-5" />
                   </Link>
                 </td>
               </tr>
