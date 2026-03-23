@@ -9,12 +9,18 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const supaConfigured = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const { data, error: err } = await supabase.auth.signInWithPassword({
+    if (!supaConfigured) {
+      setError("Supabase is not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
+      setLoading(false);
+      return;
+    }
+    const { error: err } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -23,27 +29,8 @@ export default function LoginPage() {
       setLoading(false);
       return;
     }
-    const uid = data.user?.id || (await supabase.auth.getUser()).data.user?.id || "";
-    if (!uid) {
-      setError("Unable to login");
-      setLoading(false);
-      return;
-    }
-    const { data: profile, error: profErr } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", uid)
-      .maybeSingle();
-    if (profErr) {
-      setError(profErr.message);
-      setLoading(false);
-      return;
-    }
-    const role = profile?.role as "admin" | "worker" | undefined;
-    if (role === "admin") router.replace("/admin/dashboard");
-    else if (role === "worker") router.replace("/worker/dashboard");
-    else router.replace("/");
     setLoading(false);
+    router.refresh();
   };
 
   return (

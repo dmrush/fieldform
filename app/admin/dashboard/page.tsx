@@ -19,19 +19,18 @@ import { BarChart3, ListChecks, History, FileText, ExternalLink } from "lucide-r
   const [labels, setLabels] = useState<string[]>([]);
   const [points, setPoints] = useState<number[]>([]);
   const [hover, setHover] = useState<{ i: number; x: number; y: number } | null>(null);
-  const countsAbortRef = useRef<AbortController | null>(null);
-  const trendsAbortRef = useRef<AbortController | null>(null);
+  const countsSeqRef = useRef(0);
+  const trendsSeqRef = useRef(0);
   const refreshTimer = useRef<number | null>(null);
   const chartRef = useRef<HTMLDivElement | null>(null);
  
   const loadCounts = useCallback(async (fresh = false) => {
     if (!orgId) return;
-    countsAbortRef.current?.abort();
-    const ctrl = new AbortController();
-    countsAbortRef.current = ctrl;
-    const res = await fetch(`/api/admin/dashboard?org=${orgId}${fresh ? "&fresh=1" : ""}`, { signal: ctrl.signal }).catch(() => null);
+    const seq = ++countsSeqRef.current;
+    const res = await fetch(`/api/admin/dashboard?org=${orgId}${fresh ? "&fresh=1" : ""}`, { cache: "no-store" }).catch(() => null);
     if (!res) return;
     const data = await res.json().catch(() => ({}));
+    if (seq !== countsSeqRef.current) return;
     startTransition(() => {
       setCounts({ forms: data.forms || 0, submissions: data.submissions || 0, workers: data.workers || 0 });
       setLoading(false);
@@ -46,12 +45,11 @@ import { BarChart3, ListChecks, History, FileText, ExternalLink } from "lucide-r
 
   const loadTrends = useCallback(async (fresh = false) => {
     if (!orgId) return;
-    trendsAbortRef.current?.abort();
-    const ctrl = new AbortController();
-    trendsAbortRef.current = ctrl;
-    const res = await fetch(`/api/admin/trends?org=${orgId}&range=${range}${fresh ? "&fresh=1" : ""}`, { signal: ctrl.signal }).catch(() => null);
+    const seq = ++trendsSeqRef.current;
+    const res = await fetch(`/api/admin/trends?org=${orgId}&range=${range}${fresh ? "&fresh=1" : ""}`, { cache: "no-store" }).catch(() => null);
     if (!res) return;
     const d = await res.json().catch(() => ({}));
+    if (seq !== trendsSeqRef.current) return;
     startTransition(() => {
       setLabels(d.labels || []);
       setPoints(d.points || []);
@@ -99,9 +97,7 @@ import { BarChart3, ListChecks, History, FileText, ExternalLink } from "lucide-r
       } catch {}
     };
      run();
-    return () => {
-      countsAbortRef.current?.abort();
-    };
+    return () => {};
   }, [orgId, loadCounts]);
  
   useEffect(() => {
@@ -120,7 +116,6 @@ import { BarChart3, ListChecks, History, FileText, ExternalLink } from "lucide-r
       .subscribe();
     return () => {
       if (refreshTimer.current) window.clearTimeout(refreshTimer.current);
-      trendsAbortRef.current?.abort();
       supabase.removeChannel(channel);
     };
   }, [orgId, range, scheduleRealtimeRefresh]);
